@@ -1,0 +1,13 @@
+    function onFavoriteToggle(id) {
+        const speakersRecPrevious = speakersData.find(function (rec) {
+            return rec.id === id;
+        });
+        const speakersRecUpdated = {
+            ...speakersRecPrevious,
+            favorite: !speakersRecPrevious.favorite
+        };
+        const speakersDataNew = speakersData.map(function (rec) {
+            return rec.id === id ? speakersRecUpdated : rec;
+        });
+        setSpeakersData(speakersDataNew);
+    }

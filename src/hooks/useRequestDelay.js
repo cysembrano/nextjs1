@@ -29,10 +29,58 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
 
     }, []);
 
-    function updateRecord(recordUpdated, doneCallback) {
+    function updateRecord(record, doneCallback) {
         const originalRecords = [...data];
         const newRecords = data.map(function (rec) {
-            return rec.id === recordUpdated.id ? recordUpdated : rec;
+            return rec.id ===   record.id ? record : rec;
+        });
+
+        const delayFunction = async () => {
+            try {
+                setData(newRecords);
+                await delay(delayTime);
+                if (doneCallback) {
+                    doneCallback();
+                }
+
+            } catch (e) {
+                console.error("error thrown in delayFunction", e);
+                if (doneCallback) {
+                    doneCallback();
+                }
+                setData(originalRecords);
+            }
+        };
+        delayFunction();
+    }
+
+    function insertRecord(record, doneCallback) {
+        const originalRecords = [...data];
+        const newRecords = [record, ...data];
+
+        const delayFunction = async () => {
+            try {
+                setData(newRecords);
+                await delay(delayTime);
+                if (doneCallback) {
+                    doneCallback();
+                }
+
+            } catch (e) {
+                console.error("error thrown in delayFunction", e);
+                if (doneCallback) {
+                    doneCallback();
+                }
+                setData(originalRecords);
+            }
+        };
+        delayFunction();
+    }
+
+    function deleteRecord(record, doneCallback) {
+        const originalRecords = [...data];
+        const newRecords = data.filter((rec) => {
+            return rec.id != record.id;
         });
 
         const delayFunction = async () => {
@@ -58,7 +106,9 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
         data,
         requestStatus,
         error,
-        updateRecord
+        updateRecord,
+        insertRecord,
+        deleteRecord
     };
 }
 

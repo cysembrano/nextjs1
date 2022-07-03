@@ -1,16 +1,19 @@
 import Speaker from './Speaker';
 import ReactPlaceHolder from 'react-placeholder';
 import useRequestDelay, {REQUEST_STATUS} from '../hooks/useRequestDelay';
-import {data} from '../../SpeakerData';
+import { data } from '../../SpeakerData';
 import { SpeakerFilterContext } from '../contexts/SpeakerFilterContext'; 
 import { useContext } from 'react';
+import SpeakerAdd from './SpeakerAdd';
 
 function SpeakersList() {
     const {
         data: speakersData, 
         requestStatus,
         error,
-        updateRecord
+        updateRecord,
+        insertRecord,
+        deleteRecord
     } = useRequestDelay(2000, data );
     
     const { searchQuery, eventYear } = useContext(SpeakerFilterContext);
@@ -33,6 +36,7 @@ function SpeakersList() {
                 className='speakersList-placeholder'
                 ready={requestStatus === REQUEST_STATUS.SUCCESS}
             >
+                <SpeakerAdd eventYear={eventYear} insertRecord={insertRecord} />
                 <div className='row'>
                     {
                         speakersData
@@ -49,13 +53,10 @@ function SpeakersList() {
                         })
                         .map((speaker) => {
                             return (
-                                <Speaker key={speaker.id} speaker={speaker}
-                                    onFavoriteToggle={(doneCallback) => {
-                                        updateRecord({
-                                            ...speaker,
-                                            favorite: !speaker.favorite,
-                                        }, doneCallback); 
-                                    }} />
+                                <Speaker key={speaker.id} speaker={speaker} 
+                                updateRecord={updateRecord}
+                                insertRecord={insertRecord}
+                                deleteRecord={deleteRecord}/>
                             );
                         })
                     }
